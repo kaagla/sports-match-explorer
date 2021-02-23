@@ -107,7 +107,6 @@ export default function Details(props: DetailsProps) {
   function selectedTeamIds(): string[] {
     const ids: string[] = [];
     selectedTeams.map((t) => ids.push(t.id));
-    console.log(ids);
     return ids;
   }
 
@@ -126,6 +125,20 @@ export default function Details(props: DetailsProps) {
         return matches;
       }
     }
+  }
+
+  function unselectMatch(matchId: string) {
+    const newSelectedMatches: Match[] = selectedMatches.filter(
+      (m) => m.id !== matchId
+    );
+    setSelectedMatches(newSelectedMatches);
+  }
+
+  function unselectTeam(teamId: string) {
+    const newSelectedTeams: Team[] = selectedTeams.filter(
+      (t) => t.id !== teamId
+    );
+    setSelectedTeams(newSelectedTeams);
   }
 
   if (error) {
@@ -165,11 +178,7 @@ export default function Details(props: DetailsProps) {
               selectedTeams.map((team: Team) => (
                 <SelectionItem
                   key={team.id}
-                  onClick={() =>
-                    setSelectedTeams((teams) =>
-                      teams.filter((t) => t.id !== team.id)
-                    )
-                  }
+                  onClick={() => unselectTeam(team.id)}
                 >
                   {team.name} - {team.league} X
                 </SelectionItem>
@@ -180,11 +189,7 @@ export default function Details(props: DetailsProps) {
               selectedMatches.map((match: Match) => (
                 <SelectionItem
                   key={match.id}
-                  onClick={() =>
-                    setSelectedMatches((matches) =>
-                      matches.filter((m) => m.id !== match.id)
-                    )
-                  }
+                  onClick={() => unselectMatch(match.id)}
                 >
                   {match.hometeam} - {match.awayteam} X
                 </SelectionItem>

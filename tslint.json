@@ -7,7 +7,7 @@
     "rules": {
         "ordered-imports": false,
         "object-literal-sort-keys": false,
-        "no-console": false,
+        "no-console": true,
         "jsx-no-lambda": false,
         "member-ordering": false
     }

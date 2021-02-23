@@ -2,7 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Location, Match } from '../../Interfaces';
 import LocationDetails from './LocationDetails';
-import LocationMatches from './LocationMatches'
+import LocationMatches from './LocationMatches';
 import './Map.css';
 
 interface MapProps {
@@ -11,9 +11,8 @@ interface MapProps {
 }
 
 export default function Map({ locations, matches }: MapProps) {
-
   function matchesInLocation(locationId: string): Match[] {
-    return matches.filter((match: Match) => match.location_id === locationId)
+    return matches.filter((match: Match) => match.location_id === locationId);
   }
 
   return (
@@ -24,9 +23,11 @@ export default function Map({ locations, matches }: MapProps) {
       />
       {locations.map((location: Location) => (
         <Marker key={location.id} position={[location.lat, location.lon]}>
-          <Popup className='request-popup'>
+          <Popup className="request-popup">
             <LocationDetails location={location} />
-            <LocationMatches matches={matches.filter(m => m.location_id === location.id)} />
+            <LocationMatches
+              matches={matches.filter((m) => m.location_id === location.id)}
+            />
           </Popup>
         </Marker>
       ))}

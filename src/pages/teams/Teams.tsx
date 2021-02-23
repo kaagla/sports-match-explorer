@@ -63,7 +63,6 @@ export default function Teams(props: TeamProps) {
     resource: 'teams',
   };
   const [teams, loading, error] = useData(dataProps);
-  //const [selectedTeams, setSelectedTeams] = useState<Team[]>([])
 
   function isSelected(team: Team) {
     if (props.selectedTeams.filter((t) => t.id === team.id).length > 0) {
