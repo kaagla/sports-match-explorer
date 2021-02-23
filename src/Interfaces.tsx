@@ -35,4 +35,16 @@ export interface Match {
   awayteam: string;
   score: string;
   municipality: string;
+  location_id: string;
+}
+
+export interface Location {
+  id: string;
+  address: string;
+  postoffice: string;
+  lat: number;
+  lon: number;
+  postalcode: string;
+  municipality: string;
+  grandarea: string;
 }

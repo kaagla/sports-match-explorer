@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ListUL,
   ListItem,
   ItemTitle,
   ItemName,
   ItemDetails,
-} from './ListComponents';
+  ItemIcon,
+} from '../utils/ListComponents';
 import { Team } from '../../Interfaces';
 import { useData, DataProps } from '../../services/useData';
 import styled from 'styled-components';
+import { CheckmarkCircle2Outline } from '@styled-icons/evaicons-outline';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,6 +52,8 @@ const TeamName = styled.div`
 interface TeamProps {
   id: string;
   category: string;
+  selectedTeams: Team[];
+  setSelectedTeams: (teams: Team[]) => void;
 }
 
 export default function Teams(props: TeamProps) {
@@ -59,6 +63,24 @@ export default function Teams(props: TeamProps) {
     resource: 'teams',
   };
   const [teams, loading, error] = useData(dataProps);
+  //const [selectedTeams, setSelectedTeams] = useState<Team[]>([])
+
+  function isSelected(team: Team) {
+    if (props.selectedTeams.filter((t) => t.id === team.id).length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  function handleSelect(team: Team) {
+    if (isSelected(team)) {
+      props.setSelectedTeams(
+        props.selectedTeams.filter((t) => t.id !== team.id)
+      );
+    } else {
+      props.setSelectedTeams([...props.selectedTeams, team]);
+    }
+  }
 
   if (error) {
     return <div>Virhe tapahtunut...</div>;
@@ -69,13 +91,24 @@ export default function Teams(props: TeamProps) {
       <Heading>Joukkueet</Heading>
       <ListUL>
         {teams.map((team: Team) => (
-          <ListItem key={team.id}>
+          <ListItem
+            key={team.id}
+            selected={
+              props.selectedTeams.filter((t) => t.id === team.id).length > 0
+            }
+            onClick={() => handleSelect(team)}
+          >
             <ItemTitle>
               <ItemName>{team.name}</ItemName>
               {props.category !== 'leagues' && (
                 <ItemDetails>{team.league}</ItemDetails>
               )}
             </ItemTitle>
+            {isSelected(team) && (
+              <ItemIcon>
+                <CheckmarkCircle2Outline />
+              </ItemIcon>
+            )}
           </ListItem>
         ))}
       </ListUL>

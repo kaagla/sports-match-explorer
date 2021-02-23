@@ -2,7 +2,7 @@ import { RouteComponentProps } from '@reach/router';
 import React from 'react';
 import styled from 'styled-components';
 import { Users, Trophy, SportsClub } from '@styled-icons/entypo';
-import { StyledLink } from './components/ListComponents';
+import { StyledLink } from './utils/ListComponents';
 
 const Container = styled.div`
   height: 100%;

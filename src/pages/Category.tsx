@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import styled from 'styled-components';
-import Searchfield from './components/Searchfield';
+import Searchfield from './utils/Searchfield';
 import {
   ListUL,
   ListItem,
@@ -11,8 +11,8 @@ import {
   ItemIcon,
   StyledLink,
   MoreItemsIcon,
-} from './components/ListComponents';
-import Header from './components/Header';
+} from './utils/ListComponents';
+import Header from './utils/Header';
 import {
   ArrowheadRightOutline,
   ArrowheadDownOutline,
@@ -100,7 +100,7 @@ export default function Category(props: CategoryProps) {
           .slice(0, numItems)
           .map((item: Category) => (
             <StyledLink key={item.id} to={`/${props.idPath}/${item.id}`}>
-              <ListItem>
+              <ListItem key={item.id} selected={false}>
                 <ItemTitle>
                   <ItemName>{item.name}</ItemName>
                   {item.league && <ItemDetails>{item.league}</ItemDetails>}
@@ -113,7 +113,11 @@ export default function Category(props: CategoryProps) {
             </StyledLink>
           ))}
         {filteredItems(dataItems).length > numItems && (
-          <ListItem key="more-items" onClick={() => setNumItems((i) => i + 20)}>
+          <ListItem
+            key="more-items"
+            selected={false}
+            onClick={() => setNumItems((i) => i + 20)}
+          >
             <MoreItemsIcon>
               <ArrowheadDownOutline />
             </MoreItemsIcon>

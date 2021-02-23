@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Match } from '../../Interfaces';
+import { CheckmarkCircle2Outline } from '@styled-icons/evaicons-outline';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ selected: boolean; hasLocation: boolean }>`
   width: 210px;
   margin-left: 10px;
   margin-right: 10px;
@@ -11,8 +12,20 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1f2833;
+  background-color: ${(props) => (props.selected ? '#66fcf166' : '#1f2833')};
   border-radius: 7px;
+  position: relative;
+  transition: all 0.3s;
+
+  ${(props) =>
+    props.hasLocation &&
+    css`
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(102, 252, 241, 0.2);
+      }
+    `}
 `;
 
 const League = styled.div`
@@ -50,11 +63,26 @@ const Venue = styled.div`
   flex-direction: column;
 `;
 
+const SelectedIcon = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+`;
+
 interface MatchProps {
   match: Match;
+  isSelected: boolean;
+  handleSelect: (match: Match) => void;
 }
 
-export default function MatchCard({ match }: MatchProps) {
+export default function MatchCard({
+  match,
+  isSelected,
+  handleSelect,
+}: MatchProps) {
   const VenueDiv = (venue: string, municipality: string) => {
     if (venue.toLowerCase().includes(municipality.toLowerCase())) {
       return <span>{venue}</span>;
@@ -79,7 +107,16 @@ export default function MatchCard({ match }: MatchProps) {
   };
 
   return (
-    <Wrapper>
+    <Wrapper
+      hasLocation={match.location_id !== 'loc-0'}
+      selected={isSelected}
+      onClick={() => handleSelect(match)}
+    >
+      {isSelected && (
+        <SelectedIcon>
+          <CheckmarkCircle2Outline />
+        </SelectedIcon>
+      )}
       <League>
         <span>{match.league}</span>
       </League>

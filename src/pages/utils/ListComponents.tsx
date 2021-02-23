@@ -23,7 +23,7 @@ export const StyledLink = styled(Link)`
   }
 `;
 
-export const ListItem = styled.li`
+export const ListItem = styled.li<{ selected: boolean }>`
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 10px;
@@ -34,14 +34,16 @@ export const ListItem = styled.li`
   align-items: center;
   border-radius: 5px;
   cursor: pointer;
+  background-color: ${(props) =>
+    props.selected ? '#66fcf166' : 'transparent'};
 
-  :nth-of-type(even) {
-    background-color: black;
-  }
+  /*:nth-of-type(odd) {
+    background-color: #1f2833;
+  }*/
 
   :hover {
-    background-color: #1f2833;
-    box-shadow: 0 10px 6px -6px #777;
+    background-color: rgba(102, 252, 241, 0.2);
+    /*box-shadow: 0 10px 6px -6px #777;*/
   }
 `;
 

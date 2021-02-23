@@ -5,10 +5,9 @@ const Wrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: row;
-  font-size: 30px;
 
   @media only screen and (max-width: 600px) {
-    font-size: 20px;
+    font-size: 12px;
   }
 `;
 
@@ -21,10 +20,10 @@ interface Item {
 export default function ItemDetails(props: Item) {
   return (
     <Wrapper>
-      <span>
+      <h1>
         {props.name} - {props.league ? props.league + ' - ' : ''}
         {props.sport}
-      </span>
+      </h1>
     </Wrapper>
   );
 }

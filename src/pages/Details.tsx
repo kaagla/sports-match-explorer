@@ -1,11 +1,13 @@
 import { RouteComponentProps } from '@reach/router';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Team, Match } from '../Interfaces';
 import { useData, DataProps } from '../services/useData';
-import Header from './components/Header';
-import ItemDetails from './components/ItemDetails';
-import Matches from './components/Matches';
-import Teams from './components/Teams';
+import Header from './utils/Header';
+import ItemDetails from './utils/ItemDetails';
+import Matches from './matches/Matches';
+import Teams from './teams/Teams';
+import DetailsMap from './map/DetailsMap';
 
 const Container = styled.div`
   height: 100%;
@@ -31,6 +33,9 @@ const Content = styled.div`
 
 const MatchContent = styled.div`
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media only screen and (max-width: 1000px) {
     width: 95%;
@@ -43,6 +48,36 @@ const TeamContent = styled.div`
   @media only screen and (max-width: 1000px) {
     width: 95%;
   }
+`;
+
+const SelectionContent = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const SelectionItem = styled.div`
+  background-color: #1f2833;
+  border-radius: 10px;
+  padding: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+
+  :hover {
+    background-color: rgba(102, 252, 241, 0.2);
+  }
+`;
+
+const MapDiv = styled.div`
+  width: 95%;
+  height: 95vh;
+  max-height: 600px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  align-self: center;
 `;
 
 interface DetailsProps extends RouteComponentProps {
@@ -63,8 +98,35 @@ export default function Details(props: DetailsProps) {
     resource: 'info',
   };
   const [response, loading, error] = useData(dataProps);
+  const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
+  const [selectedMatches, setSelectedMatches] = useState<Match[]>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
 
   const item: Item = Array.isArray(response) ? response[0] : response;
+
+  function selectedTeamIds(): string[] {
+    const ids: string[] = [];
+    selectedTeams.map((t) => ids.push(t.id));
+    console.log(ids);
+    return ids;
+  }
+
+  function matchesForMap() {
+    if (selectedMatches.length > 0) {
+      return selectedMatches;
+    } else {
+      if (selectedTeamIds().length > 0) {
+        const matchesSelectedTeams = matches.filter((m) =>
+          [m.hometeam_id, m.awayteam_id].some((id: string) =>
+            selectedTeamIds().includes(id)
+          )
+        );
+        return matchesSelectedTeams;
+      } else {
+        return matches;
+      }
+    }
+  }
 
   if (error) {
     return (
@@ -89,11 +151,59 @@ export default function Details(props: DetailsProps) {
       </Header>
       <Content>
         <MatchContent>
-          <Matches title="Ottelut" category={props.category} id={props.id} />
+          <Matches
+            title="Ottelut"
+            category={props.category}
+            id={props.id}
+            selectedTeamIds={selectedTeamIds()}
+            selectedMatches={selectedMatches}
+            setSelectedMatches={setSelectedMatches}
+            setMatches={setMatches}
+          />
+          <SelectionContent>
+            {selectedTeams.length > 0 &&
+              selectedTeams.map((team: Team) => (
+                <SelectionItem
+                  key={team.id}
+                  onClick={() =>
+                    setSelectedTeams((teams) =>
+                      teams.filter((t) => t.id !== team.id)
+                    )
+                  }
+                >
+                  {team.name} - {team.league} X
+                </SelectionItem>
+              ))}
+          </SelectionContent>
+          <SelectionContent>
+            {selectedMatches.length > 0 &&
+              selectedMatches.map((match: Match) => (
+                <SelectionItem
+                  key={match.id}
+                  onClick={() =>
+                    setSelectedMatches((matches) =>
+                      matches.filter((m) => m.id !== match.id)
+                    )
+                  }
+                >
+                  {match.hometeam} - {match.awayteam} X
+                </SelectionItem>
+              ))}
+          </SelectionContent>
+          <DetailsMap
+            id={props.id}
+            category={props.category}
+            matches={matchesForMap()}
+          />
         </MatchContent>
         {['clubs', 'leagues'].includes(props.category) && (
           <TeamContent>
-            <Teams id={props.id} category={props.category} />
+            <Teams
+              id={props.id}
+              category={props.category}
+              selectedTeams={selectedTeams}
+              setSelectedTeams={setSelectedTeams}
+            />
           </TeamContent>
         )}
       </Content>
