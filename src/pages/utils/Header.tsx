@@ -40,7 +40,7 @@ export default function Header(props: Props) {
   return (
     <Wrapper>
       <div>
-        <BackButton onClick={() => window.history.go(-1)}>
+        <BackButton onClick={() => history.back()}>
           <ArrowheadLeftOutline />
         </BackButton>
       </div>

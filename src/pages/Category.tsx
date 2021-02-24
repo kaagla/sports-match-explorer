@@ -46,8 +46,8 @@ interface CategoryProps extends RouteComponentProps {
 export default function Category(props: CategoryProps) {
   const dataProps: DataProps = { category: props.category };
   const [dataItems, loading, error] = useData(dataProps);
-  const [text, setText] = useState('');
-  const [numItems, setNumItems] = useState(10);
+  const [text, setText] = useState(history.state.text || '');
+  const [numItems, setNumItems] = useState(history.state.numItems || 10);
 
   const filteredItems = (items: Category[]) => {
     if (items.length > 0 && items[0].league) {
@@ -55,7 +55,7 @@ export default function Category(props: CategoryProps) {
         (item: Category) =>
           text
             .split(' ')
-            .every((i) =>
+            .every((i: string) =>
               (item.name + ' ' + item.league + ' ' + item.sport)
                 .toLowerCase()
                 .includes(i.toLowerCase())
@@ -68,7 +68,7 @@ export default function Category(props: CategoryProps) {
       (item: Category) =>
         text
           .split(' ')
-          .every((i) =>
+          .every((i: string) =>
             (item.name + ' ' + item.sport)
               .toLowerCase()
               .includes(i.toLowerCase())
@@ -78,20 +78,40 @@ export default function Category(props: CategoryProps) {
     );
   };
 
-  useEffect(() => {
-    setNumItems(10);
-  }, [text]);
-
-  if (error) {
-    return <div>Virhe tapahtunut...</div>;
+  function handleText(t: string) {
+    setText(t);
+    handleNumItems(10);
+    const currState = history.state;
+    history.replaceState(Object.assign(currState, { text: t }), 'text');
   }
+
+  function handleNumItems(n: number) {
+    setNumItems(n);
+    const currState = history.state;
+    history.replaceState(Object.assign(currState, { numItems: n }), 'numItems');
+  }
+
+  function handleScrollPos(pos: number) {
+    const currState = history.state;
+    history.replaceState(
+      Object.assign(currState, { scrollPos: pos }),
+      'scrollPos'
+    );
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      document.documentElement.scrollTop = document.body.scrollTop =
+        history.state.scrollPos || 0;
+    }, 100);
+  }, []);
 
   return (
     <Container>
       <Header title={props.title} />
       <Searchfield
         text={text}
-        handleTextChange={setText}
+        handleTextChange={handleText}
         category={props.category}
       />
       {loading && <div>Ladataan...</div>}
@@ -99,7 +119,11 @@ export default function Category(props: CategoryProps) {
         {filteredItems(dataItems)
           .slice(0, numItems)
           .map((item: Category) => (
-            <StyledLink key={item.id} to={`/${props.idPath}/${item.id}`}>
+            <StyledLink
+              onClick={() => handleScrollPos(window.scrollY)}
+              key={item.id}
+              to={`/${props.idPath}/${item.id}`}
+            >
               <ListItem key={item.id} selected={false}>
                 <ItemTitle>
                   <ItemName>{item.name}</ItemName>
@@ -116,7 +140,7 @@ export default function Category(props: CategoryProps) {
           <ListItem
             key="more-items"
             selected={false}
-            onClick={() => setNumItems((i) => i + 20)}
+            onClick={() => handleNumItems(numItems + 20)}
           >
             <MoreItemsIcon>
               <ArrowheadDownOutline />

@@ -27,7 +27,7 @@ const Input = styled.input`
   background-color: inherit;
   width: 70%;
   height: 30px;
-  border-bottom: solid currentColor 2px;
+  /*border-bottom: solid currentColor 2px;*/
 
   :focus {
     outline: none;

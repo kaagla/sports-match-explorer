@@ -37,13 +37,8 @@ export const ListItem = styled.li<{ selected: boolean }>`
   background-color: ${(props) =>
     props.selected ? '#66fcf166' : 'transparent'};
 
-  /*:nth-of-type(odd) {
-    background-color: #1f2833;
-  }*/
-
   :hover {
     background-color: rgba(102, 252, 241, 0.2);
-    /*box-shadow: 0 10px 6px -6px #777;*/
   }
 `;
 
@@ -66,4 +61,5 @@ export const MoreItemsIcon = styled(ItemIcon)`
   width: 100%;
   display: flex;
   justify-content: center;
+  color: inherit;
 `;
