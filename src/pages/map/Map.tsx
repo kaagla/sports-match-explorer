@@ -8,15 +8,21 @@ import './Map.css';
 interface MapProps {
   locations: Location[];
   matches: Match[];
+  lat?: number;
+  lon?: number;
 }
 
-export default function Map({ locations, matches }: MapProps) {
+export default function Map({ locations, matches, lat, lon }: MapProps) {
   function matchesInLocation(locationId: string): Match[] {
     return matches.filter((match: Match) => match.location_id === locationId);
   }
 
+  const cLat = lat ? lat : 63;
+  const cLon = lon ? lon : 25;
+  const zoom = lat && lon ? 10 : 6;
+
   return (
-    <MapContainer center={[63, 25]} zoom={6} scrollWheelZoom={false}>
+    <MapContainer center={[cLat, cLon]} zoom={zoom} scrollWheelZoom={false}>
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

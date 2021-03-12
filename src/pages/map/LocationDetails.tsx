@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Location } from '../../Interfaces';
 import { Directions } from '@styled-icons/fa-solid';
-import { StyledLink } from '../utils/ListComponents';
 
 const Wrapper = styled.div`
   width: 200px;
@@ -47,7 +46,9 @@ export default function LocationDetails({ location }: Props) {
       <Address>
         <span>{location.address}</span>
         <span>
-          {location.postalcode}, {location.municipality}
+          {location.postoffice !== location.municipality
+            ? `${location.postalcode}, ${location.postoffice}, ${location.municipality}`
+            : `${location.postalcode}, ${location.postoffice}`}
         </span>
       </Address>
       <DirectionsIcon>

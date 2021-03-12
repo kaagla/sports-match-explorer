@@ -12,17 +12,16 @@ const Wrapper = styled.div`
 `;
 
 interface Item {
-  name: string;
-  league?: string;
-  sport: string;
+  details: string[];
 }
 
 export default function ItemDetails(props: Item) {
   return (
     <Wrapper>
       <h1>
-        {props.name} - {props.league ? props.league + ' - ' : ''}
-        {props.sport}
+        {props.details.map((detail, index) =>
+          index === 0 ? detail : `, ${detail}`
+        )}
       </h1>
     </Wrapper>
   );

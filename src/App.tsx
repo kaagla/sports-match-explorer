@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Router } from '@reach/router';
 import styled from 'styled-components';
 import Category from './pages/Category';
 import Details from './pages/Details';
 import Home from './pages/Home';
+import { handleCache } from './services/cacheService';
 
 const Container = styled.div`
   margin: 0;
@@ -12,6 +13,10 @@ const Container = styled.div`
 `;
 
 export default function App() {
+  useEffect(() => {
+    handleCache();
+  }, []);
+
   return (
     <Container>
       <Router>
@@ -37,6 +42,13 @@ export default function App() {
           idPath="seurat"
         />
         <Details path="/seurat/:id" id="ID" category="clubs" />
+        <Category
+          path="/ottelupaikat"
+          category="venues"
+          title="Ottelupaikat"
+          idPath="ottelupaikat"
+        />
+        <Details path="/ottelupaikat/:id" id="ID" category="locations" />
       </Router>
     </Container>
   );

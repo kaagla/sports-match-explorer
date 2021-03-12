@@ -10,7 +10,7 @@ import {
   ItemDetails,
   ItemIcon,
   StyledLink,
-  MoreItemsIcon,
+  MoreItems,
 } from './utils/ListComponents';
 import Header from './utils/Header';
 import {
@@ -34,7 +34,10 @@ interface Category {
   id: string;
   name: string;
   league?: string;
-  sport: string;
+  sport?: string;
+  location_id?: string;
+  postoffice?: string;
+  municipality?: string;
 }
 
 interface CategoryProps extends RouteComponentProps {
@@ -57,6 +60,19 @@ export default function Category(props: CategoryProps) {
             .split(' ')
             .every((i: string) =>
               (item.name + ' ' + item.league + ' ' + item.sport)
+                .toLowerCase()
+                .includes(i.toLowerCase())
+            ) &&
+          item.name !== '' &&
+          isNaN(parseInt(item.name.split('/')[0], 10))
+      );
+    } else if (items.length && items[0].municipality && items[0].postoffice) {
+      return items.filter(
+        (item: Category) =>
+          text
+            .split(' ')
+            .every((i: string) =>
+              (item.name + ' ' + item.postoffice + ' ' + item.municipality)
                 .toLowerCase()
                 .includes(i.toLowerCase())
             ) &&
@@ -99,6 +115,26 @@ export default function Category(props: CategoryProps) {
     );
   }
 
+  function venueDetails(
+    name: string,
+    postoffice: string,
+    municipality: string
+  ): string {
+    if (name.toLowerCase().includes(postoffice.toLowerCase())) {
+      if (postoffice.toLowerCase() === municipality.toLowerCase()) {
+        return '';
+      } else {
+        return municipality;
+      }
+    } else {
+      if (postoffice.toLowerCase() === municipality.toLowerCase()) {
+        return postoffice;
+      } else {
+        return `${postoffice}, ${municipality}`;
+      }
+    }
+  }
+
   useEffect(() => {
     setTimeout(() => {
       document.documentElement.scrollTop = document.body.scrollTop =
@@ -122,14 +158,33 @@ export default function Category(props: CategoryProps) {
             <StyledLink
               onClick={() => handleScrollPos(window.scrollY)}
               key={item.id}
-              to={`/${props.idPath}/${item.id}`}
+              to={
+                props.category === 'venues'
+                  ? `/${props.idPath}/${item.location_id}`
+                  : `/${props.idPath}/${item.id}`
+              }
             >
               <ListItem key={item.id} selected={false}>
-                <ItemTitle>
-                  <ItemName>{item.name}</ItemName>
-                  {item.league && <ItemDetails>{item.league}</ItemDetails>}
-                  <ItemDetails>{item.sport}</ItemDetails>
-                </ItemTitle>
+                {props.category === 'venues' &&
+                item.postoffice &&
+                item.municipality ? (
+                  <ItemTitle>
+                    <ItemName>{item.name}</ItemName>
+                    <ItemDetails>
+                      {venueDetails(
+                        item.name,
+                        item.postoffice,
+                        item.municipality
+                      )}
+                    </ItemDetails>
+                  </ItemTitle>
+                ) : (
+                  <ItemTitle>
+                    <ItemName>{item.name}</ItemName>
+                    {item.league && <ItemDetails>{item.league}</ItemDetails>}
+                    <ItemDetails>{item.sport}</ItemDetails>
+                  </ItemTitle>
+                )}
                 <ItemIcon>
                   <ArrowheadRightOutline />
                 </ItemIcon>
@@ -142,9 +197,11 @@ export default function Category(props: CategoryProps) {
             selected={false}
             onClick={() => handleNumItems(numItems + 20)}
           >
-            <MoreItemsIcon>
-              <ArrowheadDownOutline />
-            </MoreItemsIcon>
+            <MoreItems>
+              <ItemIcon>
+                <ArrowheadDownOutline />
+              </ItemIcon>
+            </MoreItems>
           </ListItem>
         )}
       </ListUL>

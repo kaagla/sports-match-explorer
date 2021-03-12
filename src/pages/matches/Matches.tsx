@@ -32,10 +32,6 @@ const MatchContainer = styled.div`
     height: 15px;
   }
 
-  /*::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  }*/
-
   ::-webkit-scrollbar-thumb {
     background-color: currentColor;
     outline: 5px solid #1f2833;
@@ -47,6 +43,7 @@ interface Props {
   category: string;
   id: string;
   selectedTeamIds: string[];
+  selectedVenueNames: string[];
   selectedMatches: Match[];
   setSelectedMatches: (m: Match[]) => void;
   setMatches: (m: Match[]) => void;
@@ -72,6 +69,14 @@ export default function Matches(props: Props) {
   };
 
   function nextMatches() {
+    if (props.selectedVenueNames.length !== 0) {
+      return matches.filter(
+        (match: Match) =>
+          isFutureMatch(match.start_date) &&
+          props.selectedVenueNames.includes(match.venue)
+      );
+    }
+
     if (props.selectedTeamIds.length === 0) {
       return matches.filter((match: Match) => isFutureMatch(match.start_date));
     }
@@ -86,6 +91,16 @@ export default function Matches(props: Props) {
   }
 
   function pastMatches() {
+    if (props.selectedVenueNames.length !== 0) {
+      return matches
+        .filter(
+          (match: Match) =>
+            !isFutureMatch(match.start_date) &&
+            props.selectedVenueNames.includes(match.venue)
+        )
+        .reverse();
+    }
+
     if (props.selectedTeamIds.length === 0) {
       return matches
         .filter((match: Match) => !isFutureMatch(match.start_date))

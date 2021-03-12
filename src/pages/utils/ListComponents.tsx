@@ -57,7 +57,7 @@ export const ItemIcon = styled.div`
   color: inherit;
 `;
 
-export const MoreItemsIcon = styled(ItemIcon)`
+export const MoreItems = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;

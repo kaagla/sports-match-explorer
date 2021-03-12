@@ -84,6 +84,14 @@ export default function Home(props: RouteComponentProps) {
             </Icon>
           </CategoryItem>
         </StyledLink>
+        <StyledLink to="/ottelupaikat">
+          <CategoryItem>
+            <Icon>
+              <LocationPin />
+            </Icon>
+            <div>OTTELUPAIKAT</div>
+          </CategoryItem>
+        </StyledLink>
       </CategoryItems>
     </Container>
   );

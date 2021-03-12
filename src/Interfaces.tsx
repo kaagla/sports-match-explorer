@@ -38,6 +38,13 @@ export interface Match {
   location_id: string;
 }
 
+export interface Venue {
+  id: string;
+  name: string;
+  postoffice: string;
+  municipality: string;
+}
+
 export interface Location {
   id: string;
   address: string;
