@@ -8,7 +8,7 @@
     "format": "prettier \"src/**/*.{js,tsx,html}\" --write",
     "lint": "tslint --project tsconfig.json --config tslint.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build src/index.html --experimental-scope-hoisting"
+    "build": "parcel build src/index.html"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +36,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-leaflet": "^3.1.0",
+    "react-window": "^1.8.6",
     "styled-components": "^5.2.1"
   }
 }
